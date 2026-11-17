@@ -90,7 +90,7 @@ export function initUpdates(callback) {
     (i) => {
       info = i;
       onChange();
-      if (!i.enabled) return;
+      if (!i?.enabled) return; // null: no answer (the headless tests' Tauri mock)
       setTimeout(maybeCheck, FIRST_CHECK_DELAY);
       setInterval(maybeCheck, CHECK_INTERVAL);
       window.addEventListener("focus", maybeCheck);
