@@ -575,9 +575,13 @@ latest GitHub release of one repository and replaces itself.
 - **Tested here (macOS, no gjs)**: `cargo test` (`replace_exe` incl. rollback, bundle
   and reason helpers), `tests/test_update_manifest.py`, `tests/updates.js` (also run
   under Node with `print` shimmed), the plugin's behaviour read from its source
- , a local macOS build with a throwaway key for the file names.
-  **Not run yet**: CI with the key, a real update on any OS (Windows has never been
-  run by hand), the dialog in the real app.
+, a local macOS build with a throwaway key for the file names.
+- **Tested on the fork `budenga/KiVi`** (2026-11-18): CI with its key built and signed
+  all three platforms and published `v0.2.90` with a complete `latest.json`; on macOS
+  (Apple Silicon) a local 0.1.0 `.app` in `~/Applications`, built with the fork's
+  `KIVI_UPDATE_REPO`/`KIVI_UPDATER_PUBKEY`, showed the dot, updated itself and restarted
+  as 0.2.90. **Not run yet**: a real update on Linux (AppImage), Windows (`replace_exe`
+  has never run outside `cargo test`) and Intel macOS.
 
 ## Licence
 
@@ -759,5 +763,5 @@ isn't (API 404 signed out, checked 2026-10-30). The README's quick start uses
 - No text merge of a file changed on both sides (on purpose: KiCad files
   don't merge reliably); Pull offers moving the commits to a new branch instead.
 - No code signing, notarisation or file associations.
-- In-app updates: the CI signing, `latest.json` and a real update on each OS have
-  not run yet (see Updates).
+- In-app updates: a real update has only run on Apple Silicon macOS; Linux,
+  Windows and Intel macOS are untested (see Updates).
