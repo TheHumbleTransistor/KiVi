@@ -251,7 +251,7 @@ The [user guide](docs/README.md) covers every feature in detail:
 # once: system libraries and Rust (Linux)
 sudo apt install libwebkit2gtk-4.1-dev libxdo-dev libayatana-appindicator3-dev librsvg2-dev build-essential
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-cargo install tauri-cli --version "^2" --locked
+cargo install tauri-cli --version 2.12.3 --locked   # the version CI uses
 
 cargo tauri dev        # run from source
 cargo tauri build      # release binary + AppImage in src-tauri/target/release/bundle/appimage/
