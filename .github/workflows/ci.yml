@@ -33,6 +33,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
+env:
+  # One exact version for every job. With a range ("^2"), `cargo install` keeps
+  # whatever older 2.x rust-cache restored into ~/.cargo/bin, and the update
+  # signing needs a CLI that puts the version into the signature (--app-version,
+  # 2.12.3 is the one tested). Raise it here, and in README.md, on purpose.
+  TAURI_CLI_VERSION: "2.12.3"
+
 jobs:
   test:
     name: Tests
@@ -130,7 +137,7 @@ jobs:
           workspaces: src-tauri
 
       - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2" --locked
+        run: cargo install tauri-cli --version "${{ env.TAURI_CLI_VERSION }}" --locked
 
       # A release's version is its tag's (v0.2.0 → 0.2.0), written into
       # tauri.conf.json, Cargo.toml and Cargo.lock before building: nothing to
@@ -195,7 +202,7 @@ jobs:
           workspaces: src-tauri
 
       - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2" --locked
+        run: cargo install tauri-cli --version "${{ env.TAURI_CLI_VERSION }}" --locked
 
       - name: Set the version from the tag
         if: startsWith(github.ref, 'refs/tags/v')
@@ -270,7 +277,7 @@ jobs:
           workspaces: src-tauri
 
       - name: Install Tauri CLI
-        run: cargo install tauri-cli --version "^2" --locked
+        run: cargo install tauri-cli --version "${{ env.TAURI_CLI_VERSION }}" --locked
 
       - name: Set the version from the tag
         if: startsWith(github.ref, 'refs/tags/v')
