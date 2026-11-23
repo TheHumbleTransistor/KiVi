@@ -473,6 +473,13 @@ cargo tauri build               # release + AppImage: src-tauri/target/release/b
 - Linux system deps are installed (libwebkit2gtk-4.1-dev, libxdo-dev,
   libayatana-appindicator3-dev, librsvg2-dev). They need sudo, which you don't
   have: ask the user to run apt.
+- A local AppImage is built against this machine's glibc (2.43), so it runs only
+  on systems as new. Release AppImages come from CI's `ubuntu-22.04` build job
+  (glibc 2.35), the oldest LTS in standard support, as the AppImage catalog
+  (appimage.github.io) tests on it; `tools/check_glibc.py <AppDir> [--max 2.35]`
+  shows what needs which glibc. Don't move that job to a newer runner while 22.04
+  is supported (v0.2.0 was built on 24.04 and failed the catalog test, PR #11608
+  there). The catalog also runs the app without network: it must keep its window up.
 - A first build takes about 5 min. Rebuilds take about 2 min, mostly LTO
   (`profile.release`: lto, opt-level "s", strip).
 - Windows: `src-tauri/tauri.windows.conf.json` (merged by Tauri on Windows)

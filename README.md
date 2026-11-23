@@ -446,8 +446,11 @@ ok    diff
    build cached, and a check that `THIRD-PARTY-NOTICES.md` is up to date. All
    three builds below wait for both test jobs.
 3. **Build (Linux)**, only for tags and manual runs (*Run workflow* on the
-   Actions tab): `cargo tauri build`, with the Rust build and the Tauri CLI
-   cached; lists the AppImage's bundled system libraries in
+   Actions tab): `cargo tauri build` on Ubuntu 22.04, the oldest LTS still in
+   standard support, so the AppImage runs on any system with glibc 2.35 or
+   newer (it bundles GTK and WebKitGTK but not glibc), with the Rust build and
+   the Tauri CLI cached; `tools/check_glibc.py` fails the build if anything in
+   the AppImage needs a newer glibc; lists the AppImage's bundled system libraries in
    `appimage-libraries.md`. The AppImage and that list are the `kivi-linux`
    artifact.
 4. **Build (Windows)**, likewise: `cargo tauri build --no-bundle` on a Windows
