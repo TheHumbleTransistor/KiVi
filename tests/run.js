@@ -10,7 +10,7 @@ import { renderSchematic } from "../src/sch/render.js";
 import { renderPcb } from "../src/pcb/render.js";
 import { multiply, rotate, scale, translate, apply } from "../src/geom.js";
 import { libSymbolFor } from "../src/sch/model.js";
-import { netSide } from "../src/pcb/model.js";
+import { netSide, parsePcb } from "../src/pcb/model.js";
 
 let failures = 0;
 const check = (cond, msg) => {
@@ -21,6 +21,17 @@ const check = (cond, msg) => {
 };
 
 // ---- unit checks ----
+
+{
+  // Zone fills get an outline only in files that ask for it: KiCad 10 dropped the token.
+  const board = (version, token) =>
+    parsePcb(`(kicad_pcb (version ${version}) (zone (net_name "GND") (layer "F.Cu") ${token} (min_thickness 0.5)
+      (polygon (pts (xy 0 0) (xy 1 0) (xy 1 1))) (filled_polygon (layer "F.Cu") (pts (xy 0 0) (xy 1 0) (xy 1 1)))))`);
+  check(board(20260206, "").zones[0].fillWidth === 0, "KiCad 10 zone without filled_areas_thickness has no fill outline");
+  check(board(20241229, "(filled_areas_thickness no)").zones[0].fillWidth === 0, "filled_areas_thickness no: no fill outline");
+  check(board(20221018, "(filled_areas_thickness yes)").zones[0].fillWidth === 0.5, "filled_areas_thickness yes: outline of min_thickness");
+  check(board(20171130, "").zones[0].fillWidth === 0.5, "KiCad 5 zone: outline of min_thickness");
+}
 
 {
   // Cross-probing a net shows the side most of its copper is on.

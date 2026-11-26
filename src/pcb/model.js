@@ -474,6 +474,9 @@ function parseDimension(n) {
 
 // ---- zones ----------------------------------------------------------------
 
+/** First board file version of KiCad 6, which began writing `filled_areas_thickness`. */
+const KICAD_6 = 20211014;
+
 function parseZone(n, pcb) {
   const layersNode = child(n, "layers");
   const layer = value(n, "layer", 1, null);
@@ -493,8 +496,9 @@ function parseZone(n, pcb) {
     teardrop: !!child(child(n, "attr"), "teardrop") || String(value(n, "name", 1, "")).startsWith("$teardrop"),
     settings: zoneSettings(n, keepout),
     hatch: value(n, "hatch", 1, "edge"),
-    // Fills drawn with an outline of min_thickness (KiCad 6 and older; newer files say "no").
-    fillWidth: String(value(n, "filled_areas_thickness", 1, "yes")) === "no" ? 0 : Number(value(n, "min_thickness", 1, 0)) || 0,
+    // Fills drawn with an outline of min_thickness: KiCad 5 always, KiCad 6 to 9 when the file says "yes".
+    // KiCad 10 no longer writes the token, so a file from KiCad 6 on without it has no outline.
+    fillWidth: String(value(n, "filled_areas_thickness", 1, pcb.version >= KICAD_6 ? "no" : "yes")) === "no" ? 0 : Number(value(n, "min_thickness", 1, 0)) || 0,
   };
 }
 
