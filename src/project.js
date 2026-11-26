@@ -27,7 +27,7 @@ export function joinPath(dir, rel) {
 }
 
 /** Files a repository source lists: KiCad design files and 3D models. */
-export const SOURCE_FILES = /\.(kicad_pro|kicad_sch|kicad_pcb|kicad_wks|kicad_prl|wrl|step|stp|wrz)$/i;
+export const SOURCE_FILES = /\.(kicad_pro|kicad_sch|kicad_pcb|kicad_wks|kicad_prl|wrl|step|stp|wrz|stpz)$/i;
 /** Files that the visual diff can show. */
 export const DIFFABLE = /\.kicad_(sch|pcb)$/i;
 /** Design rule files: the visual diff compares their rules (rules-diff.js) rather than drawing them. */

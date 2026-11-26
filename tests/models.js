@@ -17,6 +17,7 @@ const files = [
   "3d_lib/USB_C.step",
   "3d_lib/vendor/USB_C.wrl",
   "other/Thing.wrl",
+  "3d_lib/Module.stpz",
 ];
 const source = { label: "test", list: async () => files, url: (p) => `proj:${p}` };
 const resolve = makeModelResolver(source, "hw", ["https://lib.example/3d/", "# a comment", "https://mirror.example"]);
@@ -26,6 +27,12 @@ const all = async (path) => {
   return out;
 };
 
+{
+  // KiCad's compressed models are found by name and loaded as what they contain.
+  const found = [];
+  for await (const c of resolve("${MY_MODELS}/shapes/Module.stpz")) if (c) found.push([c.url, c.format]);
+  check("compressed STEP (.stpz) is a STEP model", found[0], ["proj:3d_lib/Module.stpz", "step"]);
+}
 check("relative to the project", (await all("${KIPRJMOD}/models/local.step"))[0], "proj:hw/models/local.step");
 check("relative path, other extension", (await all("models/local.wrl"))[0], "proj:hw/models/local.step");
 check(

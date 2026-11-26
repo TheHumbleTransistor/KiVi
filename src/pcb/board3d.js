@@ -465,7 +465,7 @@ export class Board3D {
         (async () => {
           if (format === "wrl") {
             const { VRMLLoader } = await import("../../vendor/three/addons/loaders/VRMLLoader.js");
-            const text = await (await fetchOk(url)).text();
+            const text = new TextDecoder().decode(await modelBytes(url));
             const obj = new VRMLLoader().parse(text, url.slice(0, url.lastIndexOf("/") + 1));
             obj.userData.unit = VRML_UNIT;
             obj.traverse((o) => {
@@ -640,6 +640,14 @@ async function fetchOk(url) {
   return r;
 }
 
+/** A model file's bytes, unpacked when it is gzip-compressed (KiCad's .stpz and .wrz). */
+async function modelBytes(url) {
+  const buf = await (await fetchOk(url)).arrayBuffer();
+  const head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
+  if (head[0] !== 0x1f || head[1] !== 0x8b) return buf;
+  return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+}
+
 async function runLimited(jobs, n) {
   let i = 0;
   const worker = async () => {
@@ -652,7 +660,7 @@ async function runLimited(jobs, n) {
 
 /** STEP: converted in workers and cached by step.js, loaded on first use only. */
 async function loadStep(url) {
-  const buf = await (await fetchOk(url)).arrayBuffer();
+  const buf = await modelBytes(url);
   const { loadStepModel } = await import("./step.js");
   return loadStepModel(buf);
 }

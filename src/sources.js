@@ -48,11 +48,11 @@ export function textBeforePatch(after, patch) {
 
 // ---- 3D model resolution -------------------------------------------------
 
-const MODEL_EXT = /\.(wrl|step|stp)$/i;
+const MODEL_EXT = /\.(wrl|wrz|step|stp|stpz)$/i; // .wrz and .stpz are KiCad's gzip-compressed VRML and STEP
 const LIB_VAR = /^\$\{(KICAD\d*_3DMODEL_DIR|KISYS3DMOD)\}\/?/;
 const LIB_VAR_NAME = /^(KICAD\d*_3DMODEL_DIR|KISYS3DMOD)$/;
 const THIRD_PARTY_VAR = /^KICAD\d*_3RD_PARTY$/;
-const modelFormat = (p) => (/\.wrl$/i.test(p) ? "wrl" : /\.(step|stp)$/i.test(p) ? "step" : null);
+const modelFormat = (p) => (/\.(wrl|wrz)$/i.test(p) ? "wrl" : /\.(step|stp|stpz)$/i.test(p) ? "step" : null);
 /** The same model under its other extensions, VRML first (lighter, and has KiCad's colours). */
 const modelVariants = (p) => {
   const stem = p.replace(MODEL_EXT, "");
